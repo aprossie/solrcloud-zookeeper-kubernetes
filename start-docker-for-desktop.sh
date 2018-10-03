@@ -5,14 +5,14 @@ kubectl create configmap zookeeper-config --from-env-file=configmap/zookeeper-co
 
 kubectl get configmap
 
-kubectl create -f minikube/pv-zookeeper.yml
-kubectl create -f minikube/pv-solr.yml
+#kubectl create -f minikube/pv-zookeeper.yml
+#kubectl create -f minikube/pv-solr.yml
 
-kubectl create -f minikube/pvc-zookeeper.yml
-kubectl create -f minikube/pvc-solr.yml
+#kubectl create -f minikube/pvc-zookeeper.yml
+#kubectl create -f minikube/pvc-solr.yml
 
-kubectl get pv
-kubectl get pvc
+#kubectl get pv
+#kubectl get pvc
 
 kubectl create -f statefulsets/statefulset-zookeeper.yml
 kubectl create -f services/service-zookeeper.yml

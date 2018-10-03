@@ -16,8 +16,7 @@ spec:
       terminationGracePeriodSeconds: 10
       volumes:
       - name: volzookeeper
-        persistentVolumeClaim:
-          claimName: task-zookeeper-pv-claim
+        emptyDir: {}
       containers:
       - name: zookeeper
         image: zookeeper:latest

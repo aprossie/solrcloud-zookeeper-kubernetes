@@ -7,20 +7,23 @@ spec:
     matchLabels:
       app: solr-app # has to match .spec.template.metadata.labels
   serviceName: "solr-service"
-  replicas: 1 # by default is 1
+  replicas: 2 # by default is 1
   template:
     metadata:
       labels:
         app: solr-app # has to match .spec.selector.matchLabels
+        version: "5"
     spec:
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 120
+      restartPolicy: Always
       volumes:
       - name: volsolr
-        persistentVolumeClaim:
-          claimName: task-solr-pv-claim
+        emptyDir: {}
       containers:
       - name: solr
         image: solr:latest
+        command: ["/bin/sh"]
+        args: ["-c", "SOLR_HOST=`hostname -f` solr-foreground"]
         volumeMounts:
         - name: volsolr
           mountPath: /store
@@ -43,16 +46,19 @@ spec:
               configMapKeyRef:
                 name: solr-config
                 key: zkHost
-          - name: SOLR_HOST
-            valueFrom:
-              configMapKeyRef:
-                name: solr-config
-                key: solrHost
           - name: SOLR_LOGS_DIR
             valueFrom:
               configMapKeyRef:
                 name: solr-config
                 key: solrLogsDir
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "curl --fail http://localhost:${SOLR_PORT}/solr/"
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
       initContainers:
       - name: init-solr-data
         image: busybox
